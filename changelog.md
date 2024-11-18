@@ -1,3 +1,7 @@
+__**Changelog (v2.5.2)**__
+
+- Fixed rotating blocks (i.e, logs) only placing vertically
+
 __**Changelog (v2.5.0)**__
 
 - Revamped the config entirely w/ YetAnotherConfigLibrary

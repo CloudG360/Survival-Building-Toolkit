@@ -1,8 +1,8 @@
 package me.cg360.mod.bridging.mixin;
 
-import com.mojang.logging.LogUtils;
 import me.cg360.mod.bridging.BridgingKeyMappings;
 import me.cg360.mod.bridging.BridgingMod;
+import me.cg360.mod.bridging.compat.BridgingCrosshairTweaks;
 import me.cg360.mod.bridging.raytrace.BridgingStateTracker;
 import me.cg360.mod.bridging.util.GameSupport;
 import me.cg360.mod.bridging.util.InfoStrings;
@@ -18,12 +18,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -134,13 +132,20 @@ public abstract class MinecraftClientMixin {
         // Where is the placement action coming from?
         // This is used by the game to determine the state used for directional blocks.
 
-        if(BridgingMod.getConfig().isSlabAssistEnabled()) {
-            BlockHitResult override = switch (dir.getAxis()) {
-                case X, Z -> bridgingmod$handleHorizontalSlabAssist(dir, pos);
-                case Y -> bridgingmod$handleVerticalSlabAssist(heldItem, dir, pos);
-            };
+        if(BridgingMod.getConfig().isSlabAssistEnabled() && heldItem.getItem() instanceof BlockItem heldBlockItem) {
+            Block placementBlock = heldBlockItem.getBlock();
+            boolean isSlabAssistTarget = BridgingCrosshairTweaks.slabAssistFilters
+                    .stream()
+                    .anyMatch(f -> f.apply(placementBlock));
 
-            if(override != null) return override;
+            if(isSlabAssistTarget) {
+                BlockHitResult override = switch (dir.getAxis()) {
+                    case X, Z -> bridgingmod$handleHorizontalSlabAssist(dir, pos);
+                    case Y -> bridgingmod$handleVerticalSlabAssist(heldItem, dir, pos);
+                };
+
+                if (override != null) return override;
+            }
         }
 
         Vec3 placerOrigin = Vec3.atCenterOf(pos);
