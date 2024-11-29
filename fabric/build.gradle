@@ -31,9 +31,6 @@ dependencies {
 
     modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric"
 
-    modCompileOnly(fileTree(dir: 'jarDeps', include: '*.jar'))
-    modCompileOnly("maven.modrinth:dynamiccrosshair:${rootProject.dynamiccrosshair_version_fabric}")
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }

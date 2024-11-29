@@ -1,4 +1,4 @@
-package me.cg360.mod.bridging.compat.fabric;
+package me.cg360.mod.bridging.compat;
 
 import me.cg360.mod.bridging.BridgingMod;
 import me.cg360.mod.bridging.raytrace.BridgingStateTracker;
