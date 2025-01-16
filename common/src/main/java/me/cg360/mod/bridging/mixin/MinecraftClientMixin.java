@@ -3,6 +3,8 @@ package me.cg360.mod.bridging.mixin;
 import me.cg360.mod.bridging.BridgingKeyMappings;
 import me.cg360.mod.bridging.BridgingMod;
 import me.cg360.mod.bridging.compat.BridgingCrosshairTweaks;
+import me.cg360.mod.bridging.compat.SpecialBridgingHandler;
+import me.cg360.mod.bridging.compat.SpecialHandlers;
 import me.cg360.mod.bridging.raytrace.BridgingStateTracker;
 import me.cg360.mod.bridging.util.GameSupport;
 import me.cg360.mod.bridging.util.InfoStrings;
@@ -35,6 +37,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Optional;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftClientMixin {
@@ -97,13 +101,27 @@ public abstract class MinecraftClientMixin {
             BlockPos pos = pair.getA();
             Direction dir = pair.getB().getOpposite(); // Fixes placing on vertical axes -- doesn't affect most horizontal blocks for some reason.
 
-            if (!this.player.mayUseItemAt(pos, dir, itemStack))
-                continue;
-
-            BlockHitResult blockHitResult = bridgingmod$getFinalPlaceAssistTarget(itemStack, dir, pos);
-
+            InteractionResult blockPlaceResult = null;
             int originalStackSize = itemStack.getCount();
-            InteractionResult blockPlaceResult = this.gameMode.useItemOn(this.player, hand, blockHitResult);
+
+            // Compatibility Api - allow custom handling of blocks.
+            Optional<SpecialBridgingHandler> optHandler = SpecialHandlers.getSpecialHandler(itemStack);
+            if(optHandler.isPresent()) {
+                SpecialBridgingHandler handler = optHandler.get();
+
+                if(handler.canBePlaced(itemStack)) {
+                    blockPlaceResult = optHandler.get().place();
+                } else continue;
+            }
+
+            // No custom handling of blocks? Do it the default way.
+            if(blockPlaceResult == null) {
+                if (!this.player.mayUseItemAt(pos, dir, itemStack))
+                    continue;
+
+                BlockHitResult blockHitResult = bridgingmod$getFinalPlaceAssistTarget(itemStack, dir, pos);
+                blockPlaceResult = this.gameMode.useItemOn(this.player, hand, blockHitResult);
+            }
 
             if (!blockPlaceResult.consumesAction()) continue;
 

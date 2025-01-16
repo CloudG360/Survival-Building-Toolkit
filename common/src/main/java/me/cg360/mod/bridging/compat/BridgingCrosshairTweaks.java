@@ -16,8 +16,11 @@ public class BridgingCrosshairTweaks {
 
     public static int yShift = 0;
 
+
+
     // If there's a block that isn't handled by slab assist but should be,
     // add a filter to the list.
+    //TODO: Implement in SpecialHandlers
     public static List<Function<Block, Boolean>> slabAssistFilters = new LinkedList<>();
     static {
         slabAssistFilters.add(block -> block instanceof SlabBlock);
