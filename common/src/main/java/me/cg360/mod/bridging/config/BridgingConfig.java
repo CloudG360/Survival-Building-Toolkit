@@ -6,9 +6,9 @@ import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import me.cg360.mod.bridging.BridgingMod;
 import me.cg360.mod.bridging.config.helper.*;
-import me.cg360.mod.bridging.util.PlacementAxisMode;
-import me.cg360.mod.bridging.util.PlacementAxisModeOverride;
-import net.fabricmc.loader.api.FabricLoader;
+import me.cg360.mod.bridging.config.selector.PlacementAxisMode;
+import me.cg360.mod.bridging.config.selector.PlacementAxisModeOverride;
+import me.cg360.mod.bridging.config.selector.TargetCamera;
 
 import java.awt.*;
 
@@ -29,7 +29,7 @@ public class BridgingConfig extends DefaultValueTracker {
 
 
     @SerialEntry @HideInConfigUI
-    private int version = 4;
+    private int version = 5;
 
     @SerialEntry @HideInConfigUI // gson. why is there json5 support without comments.
     private String __comment_enableBridgingAssist = "a.k.a. 'Reacharound Placement' in keybinds. The Quark thing.";
@@ -78,6 +78,8 @@ public class BridgingConfig extends DefaultValueTracker {
     private boolean enableSlabAssist = true;
     @Category("fixes") @SerialEntry
     private boolean enableNonSolidReplace = true;
+    @Category("fixes") @SerialEntry
+    private TargetCamera cameraLock = TargetCamera.COPY_TOGGLE_PERSPECTIVE;
 
 
     @Category("debug") @SerialEntry
@@ -163,7 +165,7 @@ public class BridgingConfig extends DefaultValueTracker {
     }
 
     public void upgrade() {
-        this.version = 3;
+        this.version = 5;
     }
 
 

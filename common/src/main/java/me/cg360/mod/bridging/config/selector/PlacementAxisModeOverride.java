@@ -1,4 +1,4 @@
-package me.cg360.mod.bridging.util;
+package me.cg360.mod.bridging.config.selector;
 
 import me.cg360.mod.bridging.config.helper.Translatable;
 import org.jetbrains.annotations.NotNull;

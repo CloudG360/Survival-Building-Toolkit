@@ -11,16 +11,14 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.loading.FMLConfig;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-
-import java.nio.file.Path;
 
 @Mod(value = BridgingMod.MOD_ID, dist = Dist.CLIENT)
 public class BridgingModNeoForge {
 
     private static final String DYNAMIC_CROSSHAIR_MOD = "dynamiccrosshair";
+    private static final String FREE_LOOK_MOD = "freelook";
 
     public BridgingModNeoForge(IEventBus modEventBus) {
         modEventBus.addListener(this::init);
@@ -29,13 +27,15 @@ public class BridgingModNeoForge {
 
 
     public void init(FMLClientSetupEvent event) {
-        BridgingMod.init();
 
-        if(BridgingMod.isConfigSuccessfullyInitialized())
-            ModLoadingContext.get().registerExtensionPoint(
-                    IConfigScreenFactory.class,
-                    () -> (client, parent) -> BridgingConfigUI.buildConfig().generateScreen(parent)
-            );
+        if(ModList.get().isLoaded(FREE_LOOK_MOD))
+            BridgingMod.noteIncompatibleCameraMod(FREE_LOOK_MOD);
+
+        BridgingMod.init(); // loads config
+        ModLoadingContext.get().registerExtensionPoint(
+                IConfigScreenFactory.class,
+                () -> (client, parent) -> BridgingConfigUI.buildConfig().generateScreen(parent)
+        );
 
         if(ModList.get().isLoaded(DYNAMIC_CROSSHAIR_MOD))
             InterModComms.sendTo(DYNAMIC_CROSSHAIR_MOD, "register_api", DynamicCrosshairCompat::new);
