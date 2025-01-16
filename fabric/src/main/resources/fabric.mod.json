@@ -23,7 +23,7 @@
             "me.cg360.mod.bridging.compat.fabric.ModMenuIntegration"
         ],
         "dynamiccrosshair": [
-            "me.cg360.mod.bridging.compat.DynamicCrosshairCompat"
+          "me.cg360.mod.bridging.compat.impl.DynamicCrosshairCompat"
         ]
     },
     "mixins": [
