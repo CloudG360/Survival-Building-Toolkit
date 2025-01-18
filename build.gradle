@@ -98,6 +98,12 @@ allprojects {
 			}
 		}
 		maven {
+			url = "https://www.cursemaven.com/"
+			content {
+				includeGroup "curse.maven"
+			}
+		}
+		maven {
 			name 'Xander Maven'
 			url 'https://maven.isxander.dev/releases'
 		}
