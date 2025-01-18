@@ -13,4 +13,7 @@ dependencies {
     modApi "dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric"
 
     modCompileOnly("maven.modrinth:dynamiccrosshair:${rootProject.dynamiccrosshair_version_artifact}-fabric:api")
+
+    // optional compat
+    modCompileOnly("curse.maven:dankstorage-335673:${rootProject.dank_storage_file_id}")
 }
