@@ -3,12 +3,10 @@
   "minVersion": "0.8",
   "package": "me.cg360.mod.bridging.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "me.cg360.mod.bridging.compat.BridgingModMixinPlugin",
   "mixins": [
 
   ],
   "client": [
-    "compat.DankStorageMixin",
     "CrosshairRenderingMixin",
     "MinecraftClientMixin",
     "OutlineRendererMixin"

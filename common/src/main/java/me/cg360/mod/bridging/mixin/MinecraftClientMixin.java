@@ -2,6 +2,7 @@ package me.cg360.mod.bridging.mixin;
 
 import me.cg360.mod.bridging.BridgingKeyMappings;
 import me.cg360.mod.bridging.BridgingMod;
+import me.cg360.mod.bridging.building.Bridge;
 import me.cg360.mod.bridging.compat.BridgingCrosshairTweaks;
 import me.cg360.mod.bridging.compat.SpecialBridgingHandler;
 import me.cg360.mod.bridging.compat.SpecialHandlers;
@@ -43,9 +44,6 @@ import java.util.Optional;
 @Mixin(Minecraft.class)
 public abstract class MinecraftClientMixin {
 
-    @Unique
-    private double bridgingmod$lastKnownYFrac = 0;
-
     @Shadow @Nullable public MultiPlayerGameMode gameMode;
     @Shadow @Nullable public LocalPlayer player;
     @Shadow @Nullable public HitResult hitResult;
@@ -58,7 +56,7 @@ public abstract class MinecraftClientMixin {
     public void onTick(CallbackInfo ci) {
 
         if(this.player != null && this.player.onGround()) {
-            this.bridgingmod$lastKnownYFrac = Mth.frac(this.player.getY());
+            BridgingStateTracker.lastKnownYFrac = Mth.frac(this.player.getY());
         }
 
         if(BridgingKeyMappings.TOGGLE_BRIDGING.consumeClick()) {
@@ -106,20 +104,29 @@ public abstract class MinecraftClientMixin {
 
             // Compatibility Api - allow custom handling of blocks.
             Optional<SpecialBridgingHandler> optHandler = SpecialHandlers.getSpecialHandler(itemStack);
+            boolean canBePlaced, canBePlacedInWorld;
+
             if(optHandler.isPresent()) {
                 SpecialBridgingHandler handler = optHandler.get();
 
-                if(handler.canBePlaced(itemStack)) {
+                canBePlaced = handler.canBePlaced(itemStack);
+                canBePlacedInWorld = handler.canBePlacedInWorld(itemStack, this.player, this.level, pos, dir);
+
+                if(canBePlaced && canBePlacedInWorld) {
                     blockPlaceResult = optHandler.get().place();
                 } else continue;
+
+            } else {
+                canBePlaced = GameSupport.passesDefaultPlacementCheck(itemStack);
+                canBePlacedInWorld = this.player.mayUseItemAt(pos, dir, itemStack);
             }
 
             // No custom handling of blocks? Do it the default way.
             if(blockPlaceResult == null) {
-                if (!this.player.mayUseItemAt(pos, dir, itemStack))
+                if (!(canBePlaced && canBePlacedInWorld))
                     continue;
 
-                BlockHitResult blockHitResult = bridgingmod$getFinalPlaceAssistTarget(itemStack, dir, pos);
+                BlockHitResult blockHitResult = bridgingmod$getFinalPlaceAssistTarget(itemStack, dir, pos, optHandler.orElse(null));
                 blockPlaceResult = this.gameMode.useItemOn(this.player, hand, blockHitResult);
             }
 
@@ -146,73 +153,19 @@ public abstract class MinecraftClientMixin {
 
     @Unique
     @NotNull
-    private BlockHitResult bridgingmod$getFinalPlaceAssistTarget(ItemStack heldItem, Direction dir, BlockPos pos) {
+    private BlockHitResult bridgingmod$getFinalPlaceAssistTarget(ItemStack heldItem, Direction dir, BlockPos pos, SpecialBridgingHandler specialHandler) {
         // Where is the placement action coming from?
         // This is used by the game to determine the state used for directional blocks.
 
-        if(BridgingMod.getConfig().isSlabAssistEnabled() && heldItem.getItem() instanceof BlockItem heldBlockItem) {
-            Block placementBlock = heldBlockItem.getBlock();
-            boolean isSlabAssistTarget = BridgingCrosshairTweaks.slabAssistFilters
-                    .stream()
-                    .anyMatch(f -> f.apply(placementBlock));
+        if(specialHandler != null) {
+            BlockHitResult customPlaceAssistTarget = specialHandler.generatePlacementTarget(heldItem, this.player, this.level, dir, pos);
 
-            if(isSlabAssistTarget) {
-                BlockHitResult override = switch (dir.getAxis()) {
-                    case X, Z -> bridgingmod$handleHorizontalSlabAssist(dir, pos);
-                    case Y -> bridgingmod$handleVerticalSlabAssist(heldItem, dir, pos);
-                };
-
-                if (override != null) return override;
+            if(customPlaceAssistTarget != null) {
+                return customPlaceAssistTarget;
             }
         }
 
-        Vec3 placerOrigin = Vec3.atCenterOf(pos);
-        return new BlockHitResult(placerOrigin, dir, pos, true);
+        return Bridge.getDefaultPlaceAssistTarget(heldItem, this.level, dir, pos);
     }
 
-    @Unique
-    private BlockHitResult bridgingmod$handleHorizontalSlabAssist(Direction dir, BlockPos pos) {
-        // Slab assist should also help with trapdoors.
-        // I would get stairs to work too but that either requires major jank
-        // or server-side mods.
-
-        boolean shouldTargetLowerHalf = this.bridgingmod$lastKnownYFrac > GameSupport.TRAPDOOR_HEIGHT - Path.NEAR_ZERO
-                                     && this.bridgingmod$lastKnownYFrac < GameSupport.SLAB_HEIGHT + Path.NEAR_ZERO;
-
-        Vec3 placerOrigin = shouldTargetLowerHalf
-                ? Vec3.atBottomCenterOf(pos).add(0, 0.1d, 0)
-                : Vec3.atBottomCenterOf(pos).add(0, 0.9d, 0);
-
-        // A bit of jank to get trapdoors working. context.replacingClickedOnBlock() seems to always == true
-        // with my current impl so let's ignore that. I don't think this has major side-effects?
-        Direction placeDir = shouldTargetLowerHalf
-                ? Direction.UP
-                : Direction.DOWN;
-
-        // When jank is fixed, replace 'placeDir' with 'dir'
-        return new BlockHitResult(placerOrigin, placeDir, pos, false);
-    }
-
-    // When bridging up or down, using slabs on slabs, merge them into double slabs where possible so it looks nice :)
-    @Unique
-    private BlockHitResult bridgingmod$handleVerticalSlabAssist(ItemStack heldItem, Direction dir, BlockPos pos) {
-        if(this.level == null) return null;
-        if(!(heldItem.getItem() instanceof BlockItem blockItem)) return null;
-        if(!(blockItem.getBlock() instanceof SlabBlock)) return null;
-
-        // Get the block to place "upgrade" the slab from
-        BlockPos buildingOffPos = pos.offset(dir.getNormal().multiply(-1));
-        BlockState localState = this.level.getBlockState(buildingOffPos);
-
-        if(!(localState.getBlock() instanceof SlabBlock)) return null;
-        SlabType slabType = localState.getValue(SlabBlock.TYPE);
-
-        // Check if the placement will even be accepted by the game.
-        if(slabType == SlabType.DOUBLE) return null;
-        if(slabType == SlabType.TOP && dir != Direction.DOWN) return null;
-        if(slabType == SlabType.BOTTOM && dir != Direction.UP) return null;
-
-        Vec3 placerOrigin = Vec3.atCenterOf(pos);
-        return new BlockHitResult(placerOrigin, dir, buildingOffPos, false);
-    }
 }
