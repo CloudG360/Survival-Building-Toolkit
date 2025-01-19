@@ -68,21 +68,13 @@ public class SpecialHandlers {
     // default handlers.
     static {
 
-        // buckets should be placeable!  -- unfortunately, the bucket item uses player pov *inside* the bucket item.
+        // buckets should be placeable!  -- unfortunately, the bucket item uses player pov *inside* the item useOn.
+        //                                  so I think the server side would need to match. pls test.
         //registerSpecialGroupHandler(PlaceableItemHandler.INSTANCE, item -> {
         //    return item.getItem() instanceof BucketItem;
         //});
 
         // Compatibility - Storage mods.
-        // Would be better to check if the storage was in placement mode, but whitelisting them blindly is just easier.
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_1"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_2"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_3"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_4"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_5"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_6"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_7"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_link"), PlaceableItemHandler.INSTANCE);
     }
 
     // Group selector is NOT the placement condition.
