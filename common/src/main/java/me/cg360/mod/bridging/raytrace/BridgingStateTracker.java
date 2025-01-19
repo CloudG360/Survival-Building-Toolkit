@@ -1,6 +1,7 @@
 package me.cg360.mod.bridging.raytrace;
 
 import me.cg360.mod.bridging.BridgingMod;
+import me.cg360.mod.bridging.compat.BridgingCrosshairTweaks;
 import me.cg360.mod.bridging.util.GameSupport;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -9,6 +10,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,6 +21,7 @@ public class BridgingStateTracker {
 
     private static Tuple<BlockPos, Direction> lastTickTarget = null;
 
+    public static double lastKnownYFrac = 0; // used for slab assist.
 
     /**
      * Generates a bridge assist target for a given player, under the condition
@@ -46,7 +52,6 @@ public class BridgingStateTracker {
 
         lastTickTarget = BridgingStateTracker.getBridgeAssistTargetFor(player);
     }
-
 
     public static Tuple<BlockPos, Direction> getLastTickTarget() {
         return BridgingStateTracker.lastTickTarget;

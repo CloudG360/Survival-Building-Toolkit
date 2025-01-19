@@ -1,5 +1,6 @@
 package me.cg360.mod.bridging.compat;
 
+import me.cg360.mod.bridging.compat.handler.DankStorageHandler;
 import me.cg360.mod.bridging.compat.handler.PlaceableItemHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -74,13 +75,14 @@ public class SpecialHandlers {
 
         // Compatibility - Storage mods.
         // Would be better to check if the storage was in placement mode, but whitelisting them blindly is just easier.
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_1"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_2"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_3"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_4"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_5"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_6"), PlaceableItemHandler.INSTANCE);
-        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("dankstorage", "dank_7"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_1"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_2"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_3"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_4"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_5"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_6"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_7"), PlaceableItemHandler.INSTANCE);
+        registerSpecialHandler(ResourceLocation.fromNamespaceAndPath("bankstorage", "bank_link"), PlaceableItemHandler.INSTANCE);
     }
 
     // Group selector is NOT the placement condition.

@@ -14,15 +14,6 @@ public class BridgingModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        Logger logger = LogUtils.getLogger();
-
-        if(mixinClassName.equals("me.cg360.mod.bridging.mixin.compat.DankStorageMixin")) {
-            boolean dankStorageCompatEnabled = FabricLoader.getInstance().isModLoaded("dankstorage");
-            logger.info("DankStorage [fix placement alignment]: "+(dankStorageCompatEnabled?"Enabled":"Disabled"));
-
-            return dankStorageCompatEnabled;
-        }
-
         return true;
     }
 
