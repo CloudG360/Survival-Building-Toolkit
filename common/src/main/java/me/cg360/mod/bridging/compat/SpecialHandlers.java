@@ -1,16 +1,18 @@
 package me.cg360.mod.bridging.compat;
 
-import me.cg360.mod.bridging.compat.handler.DankStorageHandler;
-import me.cg360.mod.bridging.compat.handler.PlaceableItemHandler;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class SpecialHandlers {
 
@@ -21,6 +23,14 @@ public class SpecialHandlers {
     // Run through all the activation conditions.
     private static LinkedList<SpecialGroupHandlerEntry> specialHandlerGroups = new LinkedList<>();
 
+    // If there's a block that isn't handled by slab assist but should be,
+    // add a filter to the list.
+    //TODO: Implement as a SpecialBridgingHandler
+    public static List<Function<Block, Boolean>> slabAssistFilters = new LinkedList<>();
+    static {
+        slabAssistFilters.add(block -> block instanceof SlabBlock);
+        slabAssistFilters.add(block -> block instanceof TrapDoorBlock);
+    }
 
 
     public static void registerSpecialHandler(ResourceLocation itemId, SpecialBridgingHandler handler) {

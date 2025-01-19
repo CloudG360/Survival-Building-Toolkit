@@ -8,6 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
+/**
+ * Extend this and register it in SpecialHandlers!
+ */
 public interface SpecialBridgingHandler {
 
     /**

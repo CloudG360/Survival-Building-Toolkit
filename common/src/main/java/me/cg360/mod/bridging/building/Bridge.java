@@ -2,6 +2,7 @@ package me.cg360.mod.bridging.building;
 
 import me.cg360.mod.bridging.BridgingMod;
 import me.cg360.mod.bridging.compat.BridgingCrosshairTweaks;
+import me.cg360.mod.bridging.compat.SpecialHandlers;
 import me.cg360.mod.bridging.raytrace.BridgingStateTracker;
 import me.cg360.mod.bridging.util.GameSupport;
 import me.cg360.mod.bridging.util.Path;
@@ -29,7 +30,7 @@ public class Bridge {
     public static BlockHitResult getDefaultPlaceAssistTarget(ItemStack heldItem, Level level, Direction dir, BlockPos pos) {
         if(BridgingMod.getConfig().isSlabAssistEnabled() && heldItem.getItem() instanceof BlockItem heldBlockItem) {
             Block placementBlock = heldBlockItem.getBlock();
-            boolean isSlabAssistTarget = BridgingCrosshairTweaks.slabAssistFilters
+            boolean isSlabAssistTarget = SpecialHandlers.slabAssistFilters
                     .stream()
                     .anyMatch(f -> f.apply(placementBlock));
 
@@ -47,6 +48,7 @@ public class Bridge {
         return new BlockHitResult(placerOrigin, dir, pos, true);
     }
 
+    /** Generate a fake valid placement raycast for a horizontal slab. */
     private static BlockHitResult handleHorizontalSlabAssist(BlockPos pos) {
         // Slab assist should also help with trapdoors.
         // I would get stairs to work too but that either requires major jank
@@ -69,7 +71,7 @@ public class Bridge {
         return new BlockHitResult(placerOrigin, placeDir, pos, false);
     }
 
-    // When bridging up or down, using slabs on slabs, merge them into double slabs where possible so it looks nice :)
+    /** Generate a fake valid placement raycast for a vertical slab. Handles combining slab blocks too. */
     private static BlockHitResult handleVerticalSlabAssist(ItemStack heldItem, Level level, Direction dir, BlockPos pos) {
         if(level == null) return null;
         if(!(heldItem.getItem() instanceof BlockItem blockItem)) return null;
