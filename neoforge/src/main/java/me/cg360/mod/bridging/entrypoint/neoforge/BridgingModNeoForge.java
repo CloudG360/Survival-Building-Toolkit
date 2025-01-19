@@ -2,6 +2,8 @@ package me.cg360.mod.bridging.entrypoint.neoforge;
 
 import me.cg360.mod.bridging.BridgingKeyMappings;
 import me.cg360.mod.bridging.BridgingMod;
+import me.cg360.mod.bridging.compat.impl.BankStorageCompat;
+import me.cg360.mod.bridging.compat.impl.DankStorageCompat;
 import me.cg360.mod.bridging.compat.impl.DynamicCrosshairCompat;
 import me.cg360.mod.bridging.config.BridgingConfigUI;
 import net.neoforged.api.distmarker.Dist;
@@ -39,6 +41,14 @@ public class BridgingModNeoForge {
 
         if(ModList.get().isLoaded(DYNAMIC_CROSSHAIR_MOD))
             InterModComms.sendTo(DYNAMIC_CROSSHAIR_MOD, "register_api", DynamicCrosshairCompat::new);
+
+        if(ModList.get().isLoaded("dankstorage")) {
+            new DankStorageCompat();
+        }
+
+        if(ModList.get().isLoaded("bankstorage")) {
+            new BankStorageCompat();
+        }
     }
 
 
