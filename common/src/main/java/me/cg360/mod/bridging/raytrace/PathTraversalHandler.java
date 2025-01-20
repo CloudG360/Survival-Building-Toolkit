@@ -33,10 +33,14 @@ public class PathTraversalHandler {
         if(level == null)
             return null;
 
-        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-        List<BlockPos> path = PathTraversalHandler.getViewBlockPath(player, camera);
+        Perspective perspective = switch (BridgingMod.getConfig().getPerspectiveLock()) {
+            case COPY_TOGGLE_PERSPECTIVE -> Perspective.fromCamera(Minecraft.getInstance().gameRenderer.getMainCamera());
+            case ALWAYS_EYELINE -> Perspective.fromEntity(player);
+        };
 
-        Vector3f viewDirection = camera.getLookVector();
+        List<BlockPos> path = PathTraversalHandler.getViewBlockPath(player, perspective);
+
+        Vector3f viewDirection = perspective.getLookVector();
         List<Direction> validSides = PathTraversalHandler.getValidAssistSides(viewDirection);
 
         Direction validDirection = null;
@@ -81,7 +85,7 @@ public class PathTraversalHandler {
      * Generates a list of blocks which follow the reach line of a given
      * player from a certain distance.
      */
-    public static List<BlockPos> getViewBlockPath(Entity player, Camera view) {
+    public static List<BlockPos> getViewBlockPath(Entity player, Perspective view) {
         if(player == null)
             return new ArrayList<>();
 

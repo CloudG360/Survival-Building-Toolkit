@@ -43,6 +43,9 @@
     "enum.bridgingmod.placement_axis.both": "Any",
     "enum.bridgingmod.placement_axis.fallback": "Same As Usual",
 
+    "enum.bridgingmod.source_perspective.copy_toggle_perspective": "Copy Perspective",
+    "enum.bridgingmod.source_perspective.always_eyeline": "Follow Head Only",
+
     "config.bridgingmod.option.showCrosshair": "Show Bridging Crosshair",
     "config.bridgingmod.option.showCrosshair.description.0": "Adds arrows around your crosshair when bridging is active, indicating roughly where your block will be bridged off of (Up, Horizontal, Down)",
     "config.bridgingmod.option.showOutline": "Show Bridging Block Outline",
@@ -65,6 +68,9 @@
     "config.bridgingmod.option.skipTorchBridging.description.0": "Prevents accidental torch placing by stopping them from being used at all by Bridging",
     "config.bridgingmod.option.enableNonSolidReplace": "Replace Non-Solid Blocks",
     "config.bridgingmod.option.enableNonSolidReplace.description.0": "Allows Bridging to replace 'replaceable' blocks like tall-grass & water.",
+    "config.bridgingmod.option.perspectiveLock": "Perspective Lock",
+    "config.bridgingmod.option.perspectiveLock.description.0": "How should placement positions be calculated? Should it copy your current perspective (i.e, first & third person. F5), or should it always use the player head's view line?\n",
+    "config.bridgingmod.option.perspectiveLock.description.1": "If you're using a 'Free Look' or 'Better Third Person' and you don't like the default behaviour, try changing this.",
 
     "config.bridgingmod.option.showDebugHighlight": "Show Bridging Block Outline In F3",
     "config.bridgingmod.option.showDebugHighlight.description.0": "See Visual->Show Bridging Block Outline, but with F3",

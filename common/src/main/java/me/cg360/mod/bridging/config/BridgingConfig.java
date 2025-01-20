@@ -1,6 +1,5 @@
 package me.cg360.mod.bridging.config;
 
-import com.google.gson.annotations.SerializedName;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
@@ -8,7 +7,7 @@ import me.cg360.mod.bridging.BridgingMod;
 import me.cg360.mod.bridging.config.helper.*;
 import me.cg360.mod.bridging.config.selector.PlacementAxisMode;
 import me.cg360.mod.bridging.config.selector.PlacementAxisModeOverride;
-import me.cg360.mod.bridging.config.selector.TargetCamera;
+import me.cg360.mod.bridging.config.selector.SourcePerspective;
 
 import java.awt.*;
 
@@ -79,7 +78,8 @@ public class BridgingConfig extends DefaultValueTracker {
     @Category("fixes") @SerialEntry
     private boolean enableNonSolidReplace = true;
     @Category("fixes") @SerialEntry
-    private TargetCamera cameraLock = TargetCamera.COPY_TOGGLE_PERSPECTIVE;
+    @IncludeExtraDescription
+    private SourcePerspective perspectiveLock = SourcePerspective.COPY_TOGGLE_PERSPECTIVE;
 
 
     @Category("debug") @SerialEntry
@@ -157,6 +157,10 @@ public class BridgingConfig extends DefaultValueTracker {
 
     public boolean shouldSkipTorchBridging() {
         return this.skipTorchBridging;
+    }
+
+    public SourcePerspective getPerspectiveLock() {
+        return this.perspectiveLock;
     }
 
     public void toggleBridgingEnabled() {
