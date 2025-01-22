@@ -45,6 +45,7 @@
 
     "enum.bridgingmod.source_perspective.copy_toggle_perspective": "Copy Perspective",
     "enum.bridgingmod.source_perspective.always_eyeline": "Follow Head Only",
+    "enum.bridgingmod.source_perspective.let_bridging_mod_decide": "Let Mod Decide",
 
     "config.bridgingmod.option.showCrosshair": "Show Bridging Crosshair",
     "config.bridgingmod.option.showCrosshair.description.0": "Adds arrows around your crosshair when bridging is active, indicating roughly where your block will be bridged off of (Up, Horizontal, Down)",

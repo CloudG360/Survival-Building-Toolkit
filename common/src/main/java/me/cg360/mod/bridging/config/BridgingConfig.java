@@ -22,7 +22,6 @@ public class BridgingConfig extends DefaultValueTracker {
             .build();
 
     public BridgingConfig() {
-        this.upgrade();
         this.saveDefaults(); // This should be run before /any/ saving or loading occurs.
     }
 
@@ -79,7 +78,7 @@ public class BridgingConfig extends DefaultValueTracker {
     private boolean enableNonSolidReplace = true;
     @Category("fixes") @SerialEntry
     @IncludeExtraDescription
-    private SourcePerspective perspectiveLock = SourcePerspective.COPY_TOGGLE_PERSPECTIVE;
+    private SourcePerspective perspectiveLock = SourcePerspective.LET_BRIDGING_MOD_DECIDE;
 
 
     @Category("debug") @SerialEntry
@@ -88,7 +87,6 @@ public class BridgingConfig extends DefaultValueTracker {
     private boolean showNonBridgingDebugHighlight = false;
     @Category("debug") @SerialEntry
     private boolean showDebugTrace = false;
-
 
 
 

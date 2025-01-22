@@ -2,6 +2,7 @@ package me.cg360.mod.bridging.entrypoint.neoforge;
 
 import me.cg360.mod.bridging.BridgingKeyMappings;
 import me.cg360.mod.bridging.BridgingMod;
+import me.cg360.mod.bridging.ModIds;
 import me.cg360.mod.bridging.compat.impl.BankStorageCompat;
 import me.cg360.mod.bridging.compat.impl.DankStorageCompat;
 import me.cg360.mod.bridging.compat.impl.DynamicCrosshairCompat;
@@ -20,7 +21,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 public class BridgingModNeoForge {
 
     private static final String DYNAMIC_CROSSHAIR_MOD = "dynamiccrosshair";
-    private static final String FREE_LOOK_MOD = "freelook";
 
     public BridgingModNeoForge(IEventBus modEventBus) {
         modEventBus.addListener(this::init);
@@ -30,8 +30,8 @@ public class BridgingModNeoForge {
 
     public void init(FMLClientSetupEvent event) {
 
-        if(ModList.get().isLoaded(FREE_LOOK_MOD))
-            BridgingMod.noteIncompatibleCameraMod(FREE_LOOK_MOD);
+        if(ModList.get().isLoaded(ModIds.FREE_LOOK))
+            BridgingMod.noteIncompatibleMod(ModIds.FREE_LOOK); // this just enables extra compat code. It works.
 
         BridgingMod.init(); // loads config
         ModLoadingContext.get().registerExtensionPoint(

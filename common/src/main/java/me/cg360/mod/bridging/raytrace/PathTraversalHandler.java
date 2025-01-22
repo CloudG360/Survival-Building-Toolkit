@@ -1,6 +1,7 @@
 package me.cg360.mod.bridging.raytrace;
 
 import me.cg360.mod.bridging.BridgingMod;
+import me.cg360.mod.bridging.config.selector.SourcePerspective;
 import me.cg360.mod.bridging.util.GameSupport;
 import me.cg360.mod.bridging.util.Path;
 import me.cg360.mod.bridging.config.selector.PlacementAxisMode;
@@ -33,9 +34,14 @@ public class PathTraversalHandler {
         if(level == null)
             return null;
 
-        Perspective perspective = switch (BridgingMod.getConfig().getPerspectiveLock()) {
-            case COPY_TOGGLE_PERSPECTIVE -> Perspective.fromCamera(Minecraft.getInstance().gameRenderer.getMainCamera());
-            case ALWAYS_EYELINE -> Perspective.fromEntity(player);
+        SourcePerspective perspectiveLock = BridgingMod.getCompatibleSourcePerspective();
+
+        Perspective perspective = switch (perspectiveLock) {
+            case COPY_TOGGLE_PERSPECTIVE, LET_BRIDGING_MOD_DECIDE ->
+                    Perspective.fromCamera(Minecraft.getInstance().gameRenderer.getMainCamera());
+
+            case ALWAYS_EYELINE ->
+                    Perspective.fromEntity(player);
         };
 
         List<BlockPos> path = PathTraversalHandler.getViewBlockPath(player, perspective);
