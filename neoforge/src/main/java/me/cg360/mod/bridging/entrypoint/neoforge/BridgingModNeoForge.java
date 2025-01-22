@@ -20,8 +20,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 @Mod(value = BridgingMod.MOD_ID, dist = Dist.CLIENT)
 public class BridgingModNeoForge {
 
-    private static final String DYNAMIC_CROSSHAIR_MOD = "dynamiccrosshair";
-
     public BridgingModNeoForge(IEventBus modEventBus) {
         modEventBus.addListener(this::init);
         modEventBus.addListener(this::registerBindings);
@@ -39,14 +37,14 @@ public class BridgingModNeoForge {
                 () -> (client, parent) -> BridgingConfigUI.buildConfig().generateScreen(parent)
         );
 
-        if(ModList.get().isLoaded(DYNAMIC_CROSSHAIR_MOD))
-            InterModComms.sendTo(DYNAMIC_CROSSHAIR_MOD, "register_api", DynamicCrosshairCompat::new);
+        if(ModList.get().isLoaded(ModIds.DYNAMIC_CROSSHAIR))
+            InterModComms.sendTo(ModIds.DYNAMIC_CROSSHAIR, "register_api", DynamicCrosshairCompat::new);
 
-        if(ModList.get().isLoaded("dankstorage")) {
+        if(ModList.get().isLoaded(ModIds.DANK_STORAGE)) {
             new DankStorageCompat();
         }
 
-        if(ModList.get().isLoaded("bankstorage")) {
+        if(ModList.get().isLoaded(ModIds.BANK_STORAGE)) {
             new BankStorageCompat();
         }
     }

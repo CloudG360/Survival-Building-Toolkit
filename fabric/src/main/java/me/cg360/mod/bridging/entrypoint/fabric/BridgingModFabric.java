@@ -19,11 +19,11 @@ public class BridgingModFabric {
             BridgingMod.noteIncompatibleMod(ModIds.FREE_LOOK); // this just enables extra compat code. It works.
         }
 
-        if(FabricLoader.getInstance().isModLoaded("dankstorage")) {
+        if(FabricLoader.getInstance().isModLoaded(ModIds.DANK_STORAGE)) {
             new DankStorageCompat();
         }
 
-        if(FabricLoader.getInstance().isModLoaded("bankstorage")) {
+        if(FabricLoader.getInstance().isModLoaded(ModIds.BANK_STORAGE)) {
             new BankStorageCompat();
         }
     }
